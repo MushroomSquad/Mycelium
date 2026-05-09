@@ -27,39 +27,62 @@ have() {
     command -v "$1" >/dev/null 2>&1
 }
 
-ensure_bootstrap_tools() {
-    local missing=()
-    have git || missing+=("git")
-    have curl || missing+=("curl")
-    if [[ ${#missing[@]} -eq 0 ]]; then
-        return
-    fi
+ensure_curl() {
+    have curl && return
+    have wget && return
 
-    log "Missing bootstrap tools: ${missing[*]}"
+    local missing=(curl)
+    log "Missing bootstrap tool: curl"
 
-    if have brew; then
-        brew install "${missing[@]}"
-        return
-    fi
-    if have apt-get; then
-        sudo apt-get update
-        sudo apt-get install -y "${missing[@]}"
-        return
-    fi
-    if have dnf; then
-        sudo dnf install -y "${missing[@]}"
-        return
-    fi
-    if have pacman; then
-        sudo pacman -Sy --noconfirm "${missing[@]}"
-        return
-    fi
-    if have zypper; then
-        sudo zypper --non-interactive install "${missing[@]}"
-        return
-    fi
+    if have brew; then brew install "${missing[@]}"; return; fi
+    if have apt-get; then sudo apt-get update && sudo apt-get install -y "${missing[@]}"; return; fi
+    if have dnf; then sudo dnf install -y "${missing[@]}"; return; fi
+    if have pacman; then sudo pacman -Sy --noconfirm "${missing[@]}"; return; fi
+    if have zypper; then sudo zypper --non-interactive install "${missing[@]}"; return; fi
 
-    fail "Unable to install bootstrap dependencies automatically. Install git first."
+    fail "curl or wget is required for installation."
+}
+
+ensure_git() {
+    have git && return
+
+    local missing=(git)
+    log "Missing bootstrap tool: git"
+
+    if have brew; then brew install "${missing[@]}"; return; fi
+    if have apt-get; then sudo apt-get update && sudo apt-get install -y "${missing[@]}"; return; fi
+    if have dnf; then sudo dnf install -y "${missing[@]}"; return; fi
+    if have pacman; then sudo pacman -Sy --noconfirm "${missing[@]}"; return; fi
+    if have zypper; then sudo zypper --non-interactive install "${missing[@]}"; return; fi
+
+    fail "Unable to install git automatically. Install git first."
+}
+
+fetch() {
+    local url="$1" target="$2"
+    if have curl; then
+        curl -fsSL "$url" -o "$target"
+    elif have wget; then
+        wget -qO "$target" "$url"
+    else
+        fail "Neither curl nor wget available"
+    fi
+}
+
+resolve_github_slug() {
+    if [[ -n "${MYCELIUM_REPO_SLUG:-}" ]]; then
+        printf '%s\n' "$MYCELIUM_REPO_SLUG"
+        return
+    fi
+    # Extract owner/repo from default URL
+    local url="$REPO_URL_DEFAULT"
+    url="${url%.git}"
+    url="${url#https://github.com/}"
+    if [[ "$url" == */* ]]; then
+        printf '%s\n' "$url"
+        return
+    fi
+    return 1
 }
 
 resolve_repo_url() {
@@ -79,7 +102,6 @@ resolve_repo_url() {
         git -C "$REPO_DIR" remote get-url origin
         return
     fi
-
     fail "Set MYCELIUM_REPO_SLUG or MYCELIUM_REPO_URL for remote bootstrap, or run install.sh from a local checkout."
 }
 
@@ -88,10 +110,31 @@ run_local_install() {
     "${repo_root}/scripts/mycelium.sh" "$ACTION" "$repo_root"
 }
 
-bootstrap_repo() {
+bootstrap_tarball() {
+    local slug="$1"
+    local branch="${MYCELIUM_BRANCH:-main}"
+    local tarball_url="https://github.com/${slug}/archive/refs/heads/${branch}.tar.gz"
+    local tmp_tar
+
+    ensure_curl
+    mkdir -p "$INSTALL_ROOT"
+
+    tmp_tar="$(mktemp)"
+    log "Downloading ${slug}@${branch} via tarball"
+    fetch "$tarball_url" "$tmp_tar"
+
+    rm -rf "$REPO_DIR"
+    mkdir -p "$REPO_DIR"
+    tar xzf "$tmp_tar" --strip-components=1 -C "$REPO_DIR"
+    rm -f "$tmp_tar"
+
+    log "Extracted to $REPO_DIR"
+}
+
+bootstrap_git() {
     local repo_url="$1"
 
-    ensure_bootstrap_tools
+    ensure_git
     mkdir -p "$INSTALL_ROOT"
 
     if [[ -d "$REPO_DIR/.git" ]]; then
@@ -104,15 +147,34 @@ bootstrap_repo() {
     fi
 }
 
+bootstrap_remote() {
+    # Prefer tarball (no git needed), fall back to git clone
+    local slug
+    if slug="$(resolve_github_slug)"; then
+        bootstrap_tarball "$slug"
+    else
+        local repo_url
+        repo_url="$(resolve_repo_url)"
+        bootstrap_git "$repo_url"
+    fi
+}
+
 main() {
-    if [[ -x "${SCRIPT_DIR}/scripts/mycelium.sh" ]]; then
+    # Local checkout — run directly
+    if [[ -n "$SCRIPT_DIR" ]] && [[ -x "${SCRIPT_DIR}/scripts/mycelium.sh" ]]; then
         run_local_install "$SCRIPT_DIR"
         return
     fi
 
-    local repo_url
-    repo_url="$(resolve_repo_url)"
-    bootstrap_repo "$repo_url"
+    # Already installed — update via git if available
+    if [[ -d "$REPO_DIR/.git" ]] && have git; then
+        bootstrap_git "$(resolve_repo_url)"
+        run_local_install "$REPO_DIR"
+        return
+    fi
+
+    # Remote bootstrap
+    bootstrap_remote
     run_local_install "$REPO_DIR"
 }
 
