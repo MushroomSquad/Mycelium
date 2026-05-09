@@ -157,12 +157,55 @@ print_next_steps() {
     printf 'Profile: mycelium profile\n'
 }
 
+install_cargo_fallbacks() {
+    # Tools that may not be in distro repos
+    local -A cargo_tools=(
+        [starship]="starship"
+        [zoxide]="zoxide"
+        [eza]="eza"
+        [bat]="bat"
+    )
+
+    local name pkg needs_cargo=0
+    for name in "${!cargo_tools[@]}"; do
+        if ! have "$name"; then
+            needs_cargo=1
+            break
+        fi
+    done
+
+    [[ "$needs_cargo" -eq 0 ]] && return 0
+
+    if ! have cargo; then
+        if have rustup; then
+            rustup default stable
+        else
+            log "Installing Rust via rustup"
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+            refresh_path
+        fi
+    fi
+
+    have cargo || { log "cargo not available, skipping fallback installs"; return 0; }
+
+    for name in "${!cargo_tools[@]}"; do
+        if ! have "$name"; then
+            pkg="${cargo_tools[$name]}"
+            log "Installing $name via cargo (not in repos)"
+            cargo install --locked "$pkg" 2>/dev/null || cargo install "$pkg" || log "cargo install $pkg failed"
+            refresh_path
+        fi
+    done
+}
+
 do_install() {
     refresh_path
     detect_profile
+    log "Detected profile: $PROFILE"
     load_profile_impl
     run_install_wizard
     profile_install_required
+    install_cargo_fallbacks
     profile_install_shell "$PRIMARY_SHELL"
     install_optional_packages
     profile_configure_system

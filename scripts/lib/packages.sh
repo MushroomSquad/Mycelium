@@ -8,7 +8,7 @@ install_packages() {
 
     case "$manager" in
         dnf)
-            sudo dnf install -y "${packages[@]}"
+            sudo dnf install -y --skip-unavailable "${packages[@]}"
             ;;
         apt)
             sudo apt-get update
