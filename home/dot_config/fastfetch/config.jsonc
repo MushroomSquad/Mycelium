@@ -15,48 +15,48 @@
     {
       "type": "os",
       "key": "os",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "kernel",
       "key": "kernel",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "shell",
       "key": "shell",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "terminal",
       "key": "terminal",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "wm",
       "format": "tty + zellij",
       "key": "workspace",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "cpu",
       "key": "cpu",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "memory",
       "key": "memory",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "disk",
       "key": "disk",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     {
       "type": "battery",
       "key": "battery",
-      "keyColor": "mauve"
+      "keyColor": "magenta"
     },
     "break",
     {
