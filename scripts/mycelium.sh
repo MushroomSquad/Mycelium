@@ -6,7 +6,15 @@ ACTION="${1:-install}"
 SOURCE_ROOT="${2:-}"
 
 if [[ -z "$SOURCE_ROOT" ]]; then
-    SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    _self="${BASH_SOURCE[0]}"
+    # Resolve symlinks (e.g. ~/.local/bin/mycelium -> repo/scripts/mycelium.sh)
+    while [[ -L "$_self" ]]; do
+        _dir="$(cd "$(dirname "$_self")" && pwd)"
+        _self="$(readlink "$_self")"
+        [[ "$_self" != /* ]] && _self="${_dir}/${_self}"
+    done
+    SOURCE_ROOT="$(cd "$(dirname "$_self")/.." && pwd)"
+    unset _self _dir
 fi
 
 # Load core libraries
