@@ -1,3 +1,5 @@
+theme "catppuccin-mocha"
+
 keybinds {
     normal {
         bind "Alt 1" { GoToTab 1; }
@@ -17,5 +19,21 @@ keybinds {
         bind "Alt n" { NewPane; }
         bind "Alt x" { CloseFocus; }
         bind "Alt r" { SwitchToMode "RenameTab"; }
+    }
+}
+
+themes {
+    catppuccin-mocha {
+        bg "#1e1e2e"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
     }
 }
