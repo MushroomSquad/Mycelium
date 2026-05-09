@@ -61,10 +61,32 @@ case "$ACTION" in
     garuda-shell-import)
         "${SCRIPTS_DIR}/garuda-upstream.sh" shell-import "$SOURCE_ROOT"
         ;;
+    restart)
+        if have zellij; then
+            local current_session
+            current_session="${ZELLIJ_SESSION_NAME:-$AUTOSTART_SESSION}"
+            log "Restarting zellij session: $current_session"
+            zellij kill-session "$current_session" 2>/dev/null || true
+            sleep 0.3
+            exec zellij --layout "$AUTOSTART_LAYOUT" --session "$current_session"
+        else
+            fail "zellij is not installed"
+        fi
+        ;;
+    restart-all)
+        if have zellij; then
+            log "Killing all zellij sessions"
+            zellij kill-all-sessions 2>/dev/null || true
+            sleep 0.3
+            exec zellij --layout "$AUTOSTART_LAYOUT" --session "$AUTOSTART_SESSION"
+        else
+            fail "zellij is not installed"
+        fi
+        ;;
     profile)
         show_profile
         ;;
     *)
-        fail "Unsupported action: $ACTION"
+        fail "Unsupported action: $ACTION. Available: install update start restart restart-all verify profile theme-sync theme-diff theme-import garuda-shell-import"
         ;;
 esac
