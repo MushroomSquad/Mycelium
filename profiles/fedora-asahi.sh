@@ -19,7 +19,7 @@ profile_install_required() {
 profile_optional_catalog() {
     cat <<'EOF'
 ops-pack|Ops pack - k9s, lazydocker, bottom, mosh|off|
-media-pack|Media pack - mpv, cmus, chafa|off|
+media-pack|Media pack - mpv, chafa|off|
 chat-pack|Chat pack - tgt|off|
 music-pack|Music pack - spotify_player|off|
 mail-pack|Mail pack - aerc, notmuch|off|
@@ -27,22 +27,22 @@ news-pack|News pack - newsboat|off|
 web-pack|Web pack - w3m, lynx, yt-dlp|off|
 disk-pack|Disk pack - ncdu, dua-cli, du-dust|off|
 writing-pack|Writing pack - helix, glow, mdcat|off|
-file-pack|File pack - yazi, broot, ranger|off|
+file-pack|File pack - ranger, yazi, broot|off|
 EOF
 }
 
 profile_install_optional_item() {
     case "$1" in
         ops-pack) install_packages dnf k9s lazydocker bottom mosh ;;
-        media-pack) install_packages dnf mpv cmus chafa ;;
-        chat-pack) install_packages dnf libcxx libcxxabi llvm-libunwind; install_cargo_packages tgt ;;
-        music-pack) install_cargo_packages spotify_player ;;
+        media-pack) install_packages dnf mpv chafa ;;
+        chat-pack) install_packages dnf libcxx-devel libcxxabi-devel llvm-libunwind; install_cargo_packages tgt ;;
+        music-pack) install_packages dnf alsa-lib-devel; install_cargo_packages spotify_player ;;
         mail-pack) install_packages dnf aerc notmuch ;;
         news-pack) install_packages dnf newsboat ;;
         web-pack) install_packages dnf w3m lynx yt-dlp ;;
         disk-pack) install_packages dnf ncdu dua-cli du-dust ;;
-        writing-pack) install_packages dnf helix glow mdcat ;;
-        file-pack) install_packages dnf yazi broot ranger ;;
+        writing-pack) install_packages dnf helix glow; install_cargo_packages mdcat ;;
+        file-pack) install_packages dnf ranger; install_cargo_packages yazi broot ;;
         *) return 1 ;;
     esac
 }
