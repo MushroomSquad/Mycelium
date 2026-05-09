@@ -1,0 +1,46 @@
+# Mycelium managed — do not edit manually
+# Profile: {{ .profile }}
+
+# --- Autostart ---
+{{ if ne .primary_shell "bash" -}}
+if status is-interactive
+    and command -sq zellij
+    and test -z "$ZELLIJ"
+    and test "$MYCELIUM_AUTOSTART" != "0"
+    exec zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}
+end
+{{ end -}}
+
+# --- Theme ---
+set -gx BAT_THEME "Catppuccin Mocha"
+set -gx FZF_DEFAULT_OPTS "--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+set -g fish_greeting
+
+# --- Tool init ---
+if command -sq zoxide
+    zoxide init fish | source
+end
+if command -sq starship
+    starship init fish | source
+end
+if command -sq fastfetch
+    and status is-interactive
+    and not set -q SSH_CONNECTION
+    fastfetch
+end
+
+# --- Abbreviations ---
+if command -sq eza
+    abbr -a ls "eza --icons=never"
+    abbr -a ll "eza -lah --icons=never"
+    abbr -a la "eza -a --icons=never"
+end
+if command -sq bat
+    abbr -a cat "bat --paging=never"
+end
+
+# --- Audio ---
+abbr -a volup "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+abbr -a voldown "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+abbr -a volmute "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+abbr -a audiostat "wpctl status"

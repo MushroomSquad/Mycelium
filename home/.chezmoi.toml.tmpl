@@ -1,0 +1,10 @@
+{{- $profile := env "MYCELIUM_PROFILE" | default "unknown" -}}
+{{- $primaryShell := env "MYCELIUM_PRIMARY_SHELL" | default "bash" -}}
+{{- $autoLayout := env "MYCELIUM_LAYOUT_NAME" | default "cockpit" -}}
+{{- $autoSession := env "MYCELIUM_SESSION_NAME" | default "cockpit" -}}
+
+[data]
+  profile = {{ $profile | quote }}
+  primary_shell = {{ $primaryShell | quote }}
+  autostart_layout = {{ $autoLayout | quote }}
+  autostart_session = {{ $autoSession | quote }}

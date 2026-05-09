@@ -1,0 +1,6 @@
+# Mycelium managed — do not edit manually
+{{ if eq .primary_shell "bash" -}}
+if [[ -z "$ZELLIJ" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]]; then
+    exec zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}
+fi
+{{ end -}}

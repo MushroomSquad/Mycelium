@@ -1,0 +1,18 @@
+[manager]
+cwd = { fg = "#89b4fa", bold = true }
+hovered = { fg = "#1e1e2e", bg = "#89b4fa" }
+preview_hovered = { fg = "#1e1e2e", bg = "#89dceb" }
+find_keyword = { fg = "#f9e2af", bold = true }
+find_position = { fg = "#f5c2e7", bold = true }
+
+[status]
+perm_sep = { fg = "#6c7086" }
+perm_type = { fg = "#89b4fa" }
+perm_read = { fg = "#a6e3a1" }
+perm_write = { fg = "#f9e2af" }
+perm_exec = { fg = "#f38ba8" }
+
+[mode]
+normal_main = { fg = "#1e1e2e", bg = "#89b4fa", bold = true }
+select_main = { fg = "#1e1e2e", bg = "#a6e3a1", bold = true }
+unset_main = { fg = "#1e1e2e", bg = "#fab387", bold = true }

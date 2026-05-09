@@ -1,0 +1,9 @@
+[".config/btop/themes/catppuccin_mocha.theme"]
+  type = "file"
+  url = "https://raw.githubusercontent.com/catppuccin/btop/main/themes/catppuccin_mocha.theme"
+  refreshPeriod = "168h"
+
+[".config/bat/themes/Catppuccin Mocha.tmTheme"]
+  type = "file"
+  url = "https://raw.githubusercontent.com/catppuccin/bat/main/themes/Catppuccin%20Mocha.tmTheme"
+  refreshPeriod = "168h"

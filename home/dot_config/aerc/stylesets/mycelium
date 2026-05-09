@@ -1,0 +1,9 @@
+*.default=true
+*.selected.fg=#1e1e2e
+*.selected.bg=#89b4fa
+*error.fg=#f38ba8
+*warning.fg=#f9e2af
+*success.fg=#a6e3a1
+msglist_unread.bold=true
+statusline_default.fg=#cdd6f4
+statusline_default.bg=#313244

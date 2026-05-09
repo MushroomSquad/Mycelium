@@ -1,0 +1,107 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+
+        children
+
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="1:main" {
+        pane split_direction="vertical" {
+            pane size="28%" {
+                command "nnn"
+            }
+
+            pane {
+                command "bash"
+            }
+        }
+    }
+
+    tab name="2:edit" {
+        pane {
+            command "nvim"
+        }
+    }
+
+    tab name="3:git" {
+        pane {
+            command "lazygit"
+        }
+    }
+
+    tab name="4:monitor" {
+        pane {
+            command "btop"
+        }
+    }
+
+{{ if eq .chezmoi.os "linux" }}
+    tab name="5:logs" {
+        pane {
+            command "journalctl"
+            args "-f"
+        }
+    }
+{{ else if eq .chezmoi.os "darwin" }}
+    tab name="5:logs" {
+        pane {
+            command "log"
+            args "stream" "--style" "compact"
+        }
+    }
+{{ else }}
+    tab name="5:logs" {
+        pane {
+            command "bash"
+            args "-lc" "echo 'Live logs are not configured for this platform.'; exec bash"
+        }
+    }
+{{ end }}
+
+{{ if eq .chezmoi.os "linux" }}
+    tab name="6:dash" {
+        pane split_direction="vertical" {
+            pane size="45%" {
+                command "fastfetch"
+            }
+
+            pane {
+                command "bash"
+                args "-lc" "while true; do clear; echo BATTERY; if ls /sys/class/power_supply/*/capacity >/dev/null 2>&1; then cat /sys/class/power_supply/*/capacity; else echo unavailable; fi; echo; echo DISK; df -h /; echo; echo AUDIO; if command -v wpctl >/dev/null 2>&1; then wpctl status | sed -n '/Audio/,/Video/p'; else echo wpctl not found; fi; sleep 5; done"
+            }
+        }
+    }
+{{ else if eq .chezmoi.os "darwin" }}
+    tab name="6:dash" {
+        pane split_direction="vertical" {
+            pane size="45%" {
+                command "fastfetch"
+            }
+
+            pane {
+                command "bash"
+                args "-lc" "while true; do clear; echo BATTERY; pmset -g batt; echo; echo DISK; df -h /; echo; echo AUDIO; osascript -e 'output volume of (get volume settings)' 2>/dev/null || echo unavailable; sleep 5; done"
+            }
+        }
+    }
+{{ else }}
+    tab name="6:dash" {
+        pane split_direction="vertical" {
+            pane size="45%" {
+                command "fastfetch"
+            }
+
+            pane {
+                command "bash"
+                args "-lc" "while true; do clear; date; echo; echo DISK; df -h /; sleep 5; done"
+            }
+        }
+    }
+{{ end }}
+}

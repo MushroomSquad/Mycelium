@@ -1,0 +1,29 @@
+# Mycelium managed — do not edit manually
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+
+# --- Theme ---
+export BAT_THEME="Catppuccin Mocha"
+export FZF_DEFAULT_OPTS="--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+
+# --- Aliases ---
+alias ls="eza --icons=never"
+alias ll="eza -lah --icons=never"
+alias la="eza -a --icons=never"
+alias cat="bat --paging=never"
+
+# --- Audio ---
+alias volup="wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+alias voldown="wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+alias volmute="wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+alias audiostat="wpctl status"
+
+# --- Tool init ---
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+fi
+if command -v fastfetch >/dev/null 2>&1 && [[ $- == *i* ]] && [[ -z "${SSH_CONNECTION:-}" ]]; then
+    fastfetch
+fi

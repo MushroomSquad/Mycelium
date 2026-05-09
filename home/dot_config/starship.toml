@@ -1,0 +1,50 @@
+add_newline = false
+
+format = """
+$os\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+$line_break\
+$character
+"""
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+vimcmd_symbol = "[❮](bold lavender)"
+
+[directory]
+style = "bold blue"
+truncation_length = 4
+truncate_to_repo = false
+
+[git_branch]
+symbol = " "
+style = "bold mauve"
+
+[git_status]
+style = "bold peach"
+
+[cmd_duration]
+style = "bold yellow"
+min_time = 500
+
+[hostname]
+ssh_only = false
+style = "bold flamingo"
+format = "[$hostname]($style) "
+
+[os]
+disabled = false
+style = "bold sky"
+
+[os.symbols]
+Arch = "󰣇 "
+Fedora = " "
+Macos = "󰀵 "
+Ubuntu = "󰕈 "
+Debian = "󰣚 "
+openSUSE = " "

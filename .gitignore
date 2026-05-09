@@ -1,0 +1,60 @@
+# === OS ===
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Editors / IDEs ===
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# === AI tooling ===
+.planning/
+.claude/
+.codex/
+.cursor/
+.aider*
+.continue/
+.codeium/
+.tabnine/
+.copilot/
+.github/copilot/
+.windsurf/
+.supermaven/
+CLAUDE.md
+.cursorrules
+.cursorignore
+.aiderignore
+
+# === Excel / Office ===
+*.xlsx
+*.xls
+*.xlsm
+*.xlsb
+*.ods
+*.csv~
+
+# === Mycelium runtime state (never committed) ===
+# installed repo clone
+~/.local/share/mycelium/
+
+# === Temp / build ===
+*.tmp
+*.bak
+*.bak.*
+*.log
+*.pid
+
+# === Shell ===
+.bash_history
+.zsh_history
+.fish_history
