@@ -23,7 +23,7 @@ truncate_to_repo = false
 
 [git_branch]
 symbol = " "
-style = "bold mauve"
+style = "bold magenta"
 
 [git_status]
 style = "bold peach"
