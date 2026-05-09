@@ -1,6 +1,6 @@
 # Mycelium managed — do not edit manually
 {{ if eq .primary_shell "bash" -}}
-if [[ -z "$ZELLIJ" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]]; then
+if command -v zellij >/dev/null 2>&1 && [[ -z "$ZELLIJ" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]] && [[ -z "${SSH_CONNECTION:-}" ]]; then
     exec zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}
 fi
 {{ end -}}

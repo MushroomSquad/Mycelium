@@ -52,13 +52,18 @@ detect_profile() {
     fi
 
     if [[ "$OS" == "Linux" ]]; then
-        if [[ "$OS_ID" == "fedora" ]] && [[ "$ARCH" == "aarch64" ]]; then
-            if rpm -qa 2>/dev/null | grep -qi asahi; then
+        local is_fedora=0
+        if [[ "$OS_ID" == "fedora" || "$OS_ID" == fedora-* ]] || string_contains "$OS_ID_LIKE" "fedora"; then
+            is_fedora=1
+        fi
+
+        if [[ "$is_fedora" -eq 1 ]] && [[ "$ARCH" == "aarch64" ]]; then
+            if [[ "$OS_ID" == *asahi* ]] || rpm -qa 2>/dev/null | grep -qi asahi; then
                 PROFILE="fedora-asahi"
                 return
             fi
         fi
-        if [[ "$OS_ID" == "fedora" ]]; then
+        if [[ "$is_fedora" -eq 1 ]]; then
             PROFILE="fedora-generic"
             return
         fi

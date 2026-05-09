@@ -1,4 +1,4 @@
 # Mycelium managed — do not edit manually
-if command -v zellij >/dev/null 2>&1 && [[ -z "${ZELLIJ:-}" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]] && [[ -o interactive ]]; then
+if command -v zellij >/dev/null 2>&1 && [[ -z "${ZELLIJ:-}" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]] && [[ -o interactive ]] && [[ -z "${SSH_CONNECTION:-}" ]]; then
     exec zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}
 fi
