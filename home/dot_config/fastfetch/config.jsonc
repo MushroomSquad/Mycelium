@@ -10,7 +10,7 @@
     "break",
     {
       "type": "title",
-      "color": { "user": "green", "at": "overlay1", "host": "blue" }
+      "color": { "user": "green", "at": "#7f849c", "host": "blue" }
     },
     {
       "type": "os",
