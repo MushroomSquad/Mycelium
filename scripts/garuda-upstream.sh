@@ -49,6 +49,18 @@ first_existing_candidate() {
     return 1
 }
 
+resolve_managed_home() {
+    if have chezmoi; then
+        local chezmoi_source
+        chezmoi_source="$(chezmoi source-path 2>/dev/null || true)"
+        if [[ -n "$chezmoi_source" ]]; then
+            printf '%s\n' "$chezmoi_source"
+            return 0
+        fi
+    fi
+    printf '%s\n' "${SOURCE_ROOT}/home"
+}
+
 read_candidate_map() {
     local map_file="${THEME_DIR}/candidate-map.conf"
     [[ -f "$map_file" ]] || fail "Missing candidate map: $map_file"
@@ -197,12 +209,13 @@ do_shell_import() {
 do_starship_import() {
     do_sync
 
-    local chezmoi_home="${SOURCE_ROOT}/home"
+    local managed_home
+    managed_home="$(resolve_managed_home)"
     local starship_candidates=("${UPSTREAM_DIR}/garuda-pkgbuilds/garuda-starship-prompt/starship.toml")
     local starship_candidate
 
     if starship_candidate="$(first_existing_candidate "${starship_candidates[@]}")"; then
-        local target="${chezmoi_home}/dot_config/starship.toml"
+        local target="${managed_home}/dot_config/starship.toml"
         ensure_dir "$(dirname "$target")"
         backup_file "$target" || true
         cp "$starship_candidate" "$target" 2>/dev/null || {
