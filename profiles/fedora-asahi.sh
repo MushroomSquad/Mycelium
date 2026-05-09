@@ -66,14 +66,25 @@ EOF
     sudo systemctl daemon-reload >/dev/null 2>&1 || true
 
     sudo tee /etc/sysctl.d/99-quiet-console.conf >/dev/null <<'EOF'
-kernel.printk = 3 4 1 3
+kernel.printk = 1 1 1 1
 EOF
+
+    # Suppress kernel messages on console (including Asahi battery/NVMe spam)
+    if [[ -f /etc/default/grub ]]; then
+        if ! grep -q 'loglevel=' /etc/default/grub 2>/dev/null; then
+            sudo sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="loglevel=1 quiet /' /etc/default/grub 2>/dev/null || true
+            if [[ -d /boot/grub2 ]]; then
+                sudo grub2-mkconfig -o /boot/grub2/grub.cfg 2>/dev/null || true
+            fi
+        fi
+    fi
 
     sudo tee /etc/vconsole.conf >/dev/null <<EOF
 FONT=${CONSOLE_FONT}
 EOF
 
     sudo sysctl --system >/dev/null 2>&1 || true
+    sudo dmesg -n 1 2>/dev/null || true
 }
 
 profile_required_commands() {

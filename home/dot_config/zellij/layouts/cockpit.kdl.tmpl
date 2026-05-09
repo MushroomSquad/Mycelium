@@ -11,97 +11,56 @@ layout {
         }
     }
 
-    tab name="1:main" {
+    tab name="main" focus=true {
         pane split_direction="vertical" {
-            pane size="28%" {
+            pane size="30%" {
                 command "nnn"
+                args "-d" "-e"
             }
 
-            pane {
-                command "bash"
-            }
+            pane focus=true
         }
     }
 
-    tab name="2:edit" {
+    tab name="edit" {
         pane {
             command "nvim"
         }
     }
 
-    tab name="3:git" {
-        pane {
-            command "lazygit"
-        }
+    tab name="git" {
+        pane
     }
 
-    tab name="4:monitor" {
+    tab name="monitor" {
         pane {
             command "btop"
         }
     }
 
 {{ if eq .chezmoi.os "linux" }}
-    tab name="5:logs" {
+    tab name="logs" {
         pane {
             command "journalctl"
-            args "-f"
+            args "-f" "--no-hostname" "-p" "4" "-o" "short-monotonic"
         }
     }
 {{ else if eq .chezmoi.os "darwin" }}
-    tab name="5:logs" {
+    tab name="logs" {
         pane {
             command "log"
-            args "stream" "--style" "compact"
+            args "stream" "--style" "compact" "--level" "error"
         }
     }
 {{ else }}
-    tab name="5:logs" {
+    tab name="logs" {
+        pane
+    }
+{{ end }}
+
+    tab name="dash" {
         pane {
-            command "bash"
-            args "-lc" "echo 'Live logs are not configured for this platform.'; exec bash"
+            command "fastfetch"
         }
     }
-{{ end }}
-
-{{ if eq .chezmoi.os "linux" }}
-    tab name="6:dash" {
-        pane split_direction="vertical" {
-            pane size="45%" {
-                command "fastfetch"
-            }
-
-            pane {
-                command "bash"
-                args "-lc" "while true; do clear; echo BATTERY; if ls /sys/class/power_supply/*/capacity >/dev/null 2>&1; then cat /sys/class/power_supply/*/capacity; else echo unavailable; fi; echo; echo DISK; df -h /; echo; echo AUDIO; if command -v wpctl >/dev/null 2>&1; then wpctl status | sed -n '/Audio/,/Video/p'; else echo wpctl not found; fi; sleep 5; done"
-            }
-        }
-    }
-{{ else if eq .chezmoi.os "darwin" }}
-    tab name="6:dash" {
-        pane split_direction="vertical" {
-            pane size="45%" {
-                command "fastfetch"
-            }
-
-            pane {
-                command "bash"
-                args "-lc" "while true; do clear; echo BATTERY; pmset -g batt; echo; echo DISK; df -h /; echo; echo AUDIO; osascript -e 'output volume of (get volume settings)' 2>/dev/null || echo unavailable; sleep 5; done"
-            }
-        }
-    }
-{{ else }}
-    tab name="6:dash" {
-        pane split_direction="vertical" {
-            pane size="45%" {
-                command "fastfetch"
-            }
-
-            pane {
-                command "bash"
-                args "-lc" "while true; do clear; date; echo; echo DISK; df -h /; sleep 5; done"
-            }
-        }
-    }
-{{ end }}
 }
