@@ -21,6 +21,9 @@ profile_optional_catalog() {
 ops-pack|Ops pack - k9s, lazydocker, bottom, mosh|off|
 media-pack|Media pack - mpv, cmus, chafa|off|
 mail-pack|Mail pack - aerc, notmuch|off|
+news-pack|News pack - newsboat|off|
+web-pack|Web pack - w3m, lynx, yt-dlp|off|
+disk-pack|Disk pack - ncdu, dua-cli, du-dust|off|
 writing-pack|Writing pack - helix, glow, mdcat|off|
 file-pack|File pack - yazi, broot, ranger|off|
 EOF
@@ -31,6 +34,9 @@ profile_install_optional_item() {
         ops-pack) install_packages dnf k9s lazydocker bottom mosh ;;
         media-pack) install_packages dnf mpv cmus chafa ;;
         mail-pack) install_packages dnf aerc notmuch ;;
+        news-pack) install_packages dnf newsboat ;;
+        web-pack) install_packages dnf w3m lynx yt-dlp ;;
+        disk-pack) install_packages dnf ncdu dua-cli du-dust ;;
         writing-pack) install_packages dnf helix glow mdcat ;;
         file-pack) install_packages dnf yazi broot ranger ;;
         *) return 1 ;;

@@ -1,11 +1,15 @@
 TUI_MODE="${MYCELIUM_TUI:-1}"
 SELECTED_OPTIONAL_IDS=()
 
+tty_available() {
+    [[ -r /dev/tty && -w /dev/tty ]]
+}
+
 prompt_backend() {
     if [[ "$TUI_MODE" != "1" ]]; then
         return
     fi
-    if [[ ! -t 0 || ! -t 1 ]]; then
+    if ! tty_available; then
         return
     fi
     if have whiptail; then
@@ -42,8 +46,8 @@ prompt_yes_no() {
             fi
             ;;
         text)
-            printf '%s [y/N]: ' "$prompt" >&2
-            read -r reply || true
+            printf '%s [y/N]: ' "$prompt" > /dev/tty
+            read -r reply < /dev/tty || true
             if [[ -z "$reply" ]]; then
                 [[ "$default" == "yes" ]]
             else
@@ -65,12 +69,12 @@ select_optional_packages_text() {
         return
     fi
 
-    printf '\nOptional packages for profile %s:\n' "$PROFILE" >&2
+    printf '\nOptional packages for profile %s:\n' "$PROFILE" > /dev/tty
     for idx in "${!ids_ref[@]}"; do
-        printf '  %d. %s\n' "$((idx + 1))" "${labels_ref[$idx]}" >&2
+        printf '  %d. %s\n' "$((idx + 1))" "${labels_ref[$idx]}" > /dev/tty
     done
-    printf 'Enter comma-separated numbers to install, or leave blank for none: ' >&2
-    read -r response || true
+    printf 'Enter comma-separated numbers to install, or leave blank for none: ' > /dev/tty
+    read -r response < /dev/tty || true
 
     [[ -z "$response" ]] && return
 
@@ -119,7 +123,7 @@ select_optional_packages() {
                 [[ "$default" == "on" ]] && enabled="ON"
                 args+=("$id" "$label" "$enabled")
             done
-            result="$(whiptail --title "Mycelium Optional Packages" --checklist "Select optional packages for ${PROFILE}" 24 90 14 "${args[@]}" 3>&1 1>&2 2>&3)" || true
+            result="$(whiptail --title "Mycelium Optional Packages" --checklist "Select optional packages for ${PROFILE}" 24 90 14 "${args[@]}" < /dev/tty 3>&1 1>&2 2>&3)" || true
             cleaned="${result//\"/}"
             for token in $cleaned; do
                 SELECTED_OPTIONAL_IDS+=("$token")
@@ -133,7 +137,7 @@ select_optional_packages() {
                 [[ "$default" == "on" ]] && enabled="on"
                 args+=("$id" "$label" "$enabled")
             done
-            result="$(dialog --stdout --checklist "Select optional packages for ${PROFILE}" 24 90 14 "${args[@]}")" || true
+            result="$(dialog --stdout --checklist "Select optional packages for ${PROFILE}" 24 90 14 "${args[@]}" < /dev/tty)" || true
             cleaned="${result//\"/}"
             for token in $cleaned; do
                 SELECTED_OPTIONAL_IDS+=("$token")

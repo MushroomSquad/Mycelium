@@ -174,6 +174,9 @@ Optional role-pack layer:
 
 - `ops-pack`: `k9s`, `lazydocker`, `bottom`, `mosh`
 - `media-pack`: `mpv`, `cmus`, `chafa`
+- `news-pack`: `newsboat`
+- `web-pack`: `w3m`, `lynx`, `yt-dlp`
+- `disk-pack`: `ncdu`, `dua-cli`, `du-dust`
 - `mail-pack`: `aerc`, `notmuch`
 - `writing-pack`: `helix`, `glow`, `mdcat`
 - `file-pack`: `yazi`, `broot`, `ranger`
