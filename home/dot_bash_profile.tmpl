@@ -1,6 +1,10 @@
 # Mycelium managed — do not edit manually
 {{ if eq .primary_shell "bash" -}}
 if command -v zellij >/dev/null 2>&1 && [[ -z "$ZELLIJ" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]] && [[ -z "${SSH_CONNECTION:-}" ]]; then
-    exec zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}
+    if [[ -f "$HOME/.config/zellij/layouts/{{ .autostart_layout }}.kdl" ]]; then
+        zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }} || true
+    else
+        zellij || true
+    fi
 fi
 {{ end -}}
