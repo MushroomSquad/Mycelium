@@ -140,14 +140,23 @@ migrate_from_v1() {
 
 apply_chezmoi() {
     ensure_chezmoi
-    local chezmoi_source="${TARGET_REPO_DIR}/home"
-    [[ -d "$chezmoi_source" ]] || chezmoi_source="${SOURCE_ROOT}/home"
 
+    local mycelium_home="${TARGET_REPO_DIR}/home"
+    [[ -d "$mycelium_home" ]] || mycelium_home="${SOURCE_ROOT}/home"
+
+    # Sync source files into chezmoi's persistent source directory
+    local chezmoi_source
+    chezmoi_source="$(chezmoi source-path 2>/dev/null || echo "${HOME}/.local/share/chezmoi")"
+    mkdir -p "$chezmoi_source"
+    cp -R "${mycelium_home}/." "${chezmoi_source}/"
+    log "Synced chezmoi source to ${chezmoi_source}"
+
+    # Init config (processes .chezmoi.toml.tmpl) and apply all managed files
     MYCELIUM_PROFILE="$PROFILE" \
     MYCELIUM_PRIMARY_SHELL="$PRIMARY_SHELL" \
     MYCELIUM_LAYOUT_NAME="${MYCELIUM_LAYOUT_NAME:-cockpit}" \
     MYCELIUM_SESSION_NAME="${MYCELIUM_SESSION_NAME:-cockpit}" \
-        chezmoi init --apply --source="$chezmoi_source"
+        chezmoi init --apply
 }
 
 kill_existing_sessions() {
