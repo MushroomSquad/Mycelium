@@ -9,8 +9,8 @@ profile_install_required() {
         ncdu tmux terminus-fonts-console terminus-fonts
 
     if ! have lazygit; then
-        sudo dnf copr enable dejan/lazygit -y
-        sudo dnf install -y lazygit
+        sudo dnf copr enable dejan/lazygit -y 2>/dev/null || true
+        sudo dnf install -y --skip-unavailable lazygit || true
     fi
 
     install_zellij_with_cargo
