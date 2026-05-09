@@ -5,13 +5,15 @@ profile_install_required() {
         perl-IPC-Cmd perl-FindBin perl-File-Compare perl-File-Copy \
         perl-Time-Piece perl-Text-Template openssl-devel pkgconf-pkg-config \
         wireplumber pavucontrol alsa-utils tlp powertop brightnessctl \
-        NetworkManager-tui fastfetch du-dust dua-cli bat eza zoxide jq yq starship \
+        NetworkManager-tui fastfetch du-dust dua-cli bat eza zoxide jq yq \
         ncdu tmux terminus-fonts-console terminus-fonts
 
     if ! have lazygit; then
         sudo dnf copr enable dejan/lazygit -y 2>/dev/null || true
         sudo dnf install -y --skip-unavailable lazygit || true
     fi
+
+    install_cargo_packages starship
 
     install_zellij_with_cargo
 }
@@ -36,7 +38,7 @@ profile_install_optional_item() {
         ops-pack) install_packages dnf k9s lazydocker bottom mosh ;;
         media-pack) install_packages dnf mpv chafa ;;
         chat-pack) install_packages dnf libcxx-devel libcxxabi-devel llvm-libunwind; install_cargo_packages tgt ;;
-        music-pack) install_packages dnf alsa-lib-devel; install_cargo_packages spotify_player ;;
+        music-pack) install_packages dnf alsa-lib-devel dbus-devel; install_cargo_packages spotify_player ;;
         mail-pack) install_packages dnf aerc notmuch ;;
         news-pack) install_packages dnf newsboat ;;
         web-pack) install_packages dnf w3m lynx yt-dlp ;;

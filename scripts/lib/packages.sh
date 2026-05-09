@@ -70,6 +70,16 @@ install_tgt_from_git() {
     refresh_path
 }
 
+install_starship_with_cargo() {
+    prepare_cargo_build_env
+    if have starship || [[ -x "$HOME/.cargo/bin/starship" ]]; then
+        return 0
+    fi
+    log "Installing starship via cargo"
+    cargo install --locked starship || cargo install starship || log "cargo install starship failed"
+    refresh_path
+}
+
 install_cargo_packages() {
     local packages=("$@")
     [[ ${#packages[@]} -eq 0 ]] && return 0
@@ -86,8 +96,19 @@ install_cargo_packages() {
             install_tgt_from_git
             continue
         fi
+        if [[ "$pkg" == "starship" ]]; then
+            install_starship_with_cargo
+            continue
+        fi
         log "Installing $pkg via cargo"
-        cargo install --locked "$pkg" 2>/dev/null || cargo install "$pkg" || log "cargo install $pkg failed"
+        case "$pkg" in
+            yazi)
+                cargo install --locked yazi-fm yazi-cli 2>/dev/null || cargo install yazi-fm yazi-cli || log "cargo install yazi failed"
+                ;;
+            *)
+                cargo install --locked "$pkg" 2>/dev/null || cargo install "$pkg" || log "cargo install $pkg failed"
+                ;;
+        esac
         refresh_path
     done
 }
