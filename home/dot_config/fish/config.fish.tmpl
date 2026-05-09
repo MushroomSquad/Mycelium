@@ -4,6 +4,28 @@
 # --- PATH ---
 fish_add_path -gP ~/.cargo/bin ~/.local/bin
 
+# --- Console palette (Catppuccin Mocha on bare TTY) ---
+if test "$TERM" = "linux"
+    # Remap the 16 console colors to Catppuccin Mocha
+    printf '\e]P01e1e2e'  # black      → Base
+    printf '\e]P1f38ba8'  # red        → Red
+    printf '\e]P2a6e3a1'  # green      → Green
+    printf '\e]P3f9e2af'  # yellow     → Yellow
+    printf '\e]P489b4fa'  # blue       → Blue
+    printf '\e]P5f5c2e7'  # magenta    → Pink
+    printf '\e]P689dceb'  # cyan       → Teal
+    printf '\e]P7bac2de'  # white      → Subtext1
+    printf '\e]P8585b70'  # bright black  → Surface2
+    printf '\e]P9f38ba8'  # bright red    → Red
+    printf '\e]PAa6e3a1'  # bright green  → Green
+    printf '\e]PBf9e2af'  # bright yellow → Yellow
+    printf '\e]PC89b4fa'  # bright blue   → Blue
+    printf '\e]PDcba6f7'  # bright magenta → Mauve
+    printf '\e]PE94e2d5'  # bright cyan   → Teal
+    printf '\e]PFcdd6f4'  # bright white  → Text
+    clear
+end
+
 # --- Autostart ---
 {{ if ne .primary_shell "bash" -}}
 if status is-interactive
