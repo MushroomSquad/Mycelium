@@ -103,6 +103,7 @@ install_cargo_packages() {
         log "Installing $pkg via cargo"
         case "$pkg" in
             yazi)
+                cargo install --force yazi-build 2>/dev/null || cargo install --force yazi-build || log "cargo install yazi-build failed"
                 cargo install --locked yazi-fm yazi-cli 2>/dev/null || cargo install yazi-fm yazi-cli || log "cargo install yazi failed"
                 ;;
             *)
