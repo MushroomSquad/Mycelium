@@ -30,11 +30,18 @@ resolve_system_config_default() {
     if [[ -n "$CONFIGURE_SYSTEM" ]]; then
         return
     fi
-    CONFIGURE_SYSTEM="0"
     if [[ "$PROFILE" == "fedora-asahi" ]]; then
-        if prompt_yes_no "Mycelium System Setup" "Apply tty1 autologin, multi-user.target, quiet console and console font settings for ${PROFILE}?" "yes"; then
-            CONFIGURE_SYSTEM="1"
+        # Default to enabled on fedora-asahi; prompt only if tty available
+        CONFIGURE_SYSTEM="1"
+        if [[ -t 0 && -t 1 ]]; then
+            if ! prompt_yes_no "Mycelium System Setup" "Apply tty1 autologin, multi-user.target, quiet console and console font settings for ${PROFILE}?" "yes"; then
+                CONFIGURE_SYSTEM="0"
+            fi
+        else
+            log "Non-interactive mode: applying system config for ${PROFILE}"
         fi
+    else
+        CONFIGURE_SYSTEM="0"
     fi
 }
 
@@ -200,6 +207,23 @@ install_cargo_fallbacks() {
     done
 }
 
+set_login_shell() {
+    local target_shell="$1"
+    [[ "$target_shell" == "bash" ]] && return 0
+
+    local shell_path
+    shell_path="$(command -v "$target_shell" 2>/dev/null || true)"
+    [[ -z "$shell_path" ]] && return 0
+
+    local current_shell
+    current_shell="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || true)"
+
+    if [[ "$current_shell" != "$shell_path" ]]; then
+        log "Setting login shell to $shell_path"
+        sudo chsh -s "$shell_path" "$USER" 2>/dev/null || chsh -s "$shell_path" 2>/dev/null || log "Unable to change login shell (run: chsh -s $shell_path)"
+    fi
+}
+
 do_install() {
     refresh_path
     detect_profile
@@ -211,6 +235,7 @@ do_install() {
     profile_install_shell "$PRIMARY_SHELL"
     install_optional_packages
     profile_configure_system
+    set_login_shell "$PRIMARY_SHELL"
     sync_repo
     link_command
     write_metadata
