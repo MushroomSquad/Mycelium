@@ -9,7 +9,7 @@ layout {
         children
 
         pane size=2 borderless=true {
-            plugin location="zellij:status-bar"
+            command "{{ .chezmoi.homeDir }}/.local/bin/mycelium-statusline"
         }
     }
 

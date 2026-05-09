@@ -1,15 +1,29 @@
 layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+
+        children
+
+        pane size=2 borderless=true {
+            command "{{ .chezmoi.homeDir }}/.local/bin/mycelium-statusline"
+        }
+    }
+
+    tab name="logs" {
 {{ if eq .chezmoi.os "linux" }}
-    pane {
-        command "journalctl"
-        args "-f" "--no-hostname" "-p" "4" "-o" "short-monotonic"
-    }
+        pane {
+            command "journalctl"
+            args "-f" "--no-hostname" "-p" "4" "-o" "short-monotonic"
+        }
 {{ else if eq .chezmoi.os "darwin" }}
-    pane {
-        command "log"
-        args "stream" "--style" "compact" "--level" "error"
-    }
+        pane {
+            command "log"
+            args "stream" "--style" "compact" "--level" "error"
+        }
 {{ else }}
-    pane
+        pane
 {{ end }}
+    }
 }
