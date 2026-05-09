@@ -47,15 +47,43 @@ ensure_cargo_toolchain() {
     have cargo || fail "cargo is required to install optional cargo packages."
 }
 
+prepare_cargo_build_env() {
+    local cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/mycelium"
+    export TMPDIR="${cache_root}/tmp"
+    export CARGO_TARGET_DIR="${cache_root}/cargo-target"
+    ensure_dir "$TMPDIR"
+    ensure_dir "$CARGO_TARGET_DIR"
+}
+
+install_tgt_from_git() {
+    prepare_cargo_build_env
+    if have tgt || [[ -x "$HOME/.cargo/bin/tgt" ]]; then
+        return 0
+    fi
+    log "Installing tgt from upstream git"
+    cargo install \
+        --git https://github.com/FedericoBruzzone/tgt \
+        --locked \
+        --no-default-features \
+        --features download-tdlib,static \
+        tgt || log "cargo install tgt from git failed"
+    refresh_path
+}
+
 install_cargo_packages() {
     local packages=("$@")
     [[ ${#packages[@]} -eq 0 ]] && return 0
 
     ensure_cargo_toolchain
+    prepare_cargo_build_env
 
     local pkg
     for pkg in "${packages[@]}"; do
         if have "$pkg" || [[ -x "$HOME/.cargo/bin/$pkg" ]]; then
+            continue
+        fi
+        if [[ "$pkg" == "tgt" ]]; then
+            install_tgt_from_git
             continue
         fi
         log "Installing $pkg via cargo"
