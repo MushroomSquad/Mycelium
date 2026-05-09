@@ -148,6 +148,17 @@ apply_chezmoi() {
     local chezmoi_source
     chezmoi_source="$(chezmoi source-path 2>/dev/null || echo "${HOME}/.local/share/chezmoi")"
     mkdir -p "$chezmoi_source"
+
+    # Remove previously managed top-level entries before copying.
+    # We intentionally scope cleanup to Mycelium's managed roots so stale files
+    # (eg. renamed templates like zellij/config.kdl -> config.kdl.tmpl) do not
+    # survive across reinstalls and updates.
+    local managed_entry
+    while IFS= read -r managed_entry; do
+        [[ -n "$managed_entry" ]] || continue
+        rm -rf "${chezmoi_source}/${managed_entry}"
+    done < <(cd "$mycelium_home" && find . -mindepth 1 -maxdepth 1 -printf '%P\n')
+
     cp -R "${mycelium_home}/." "${chezmoi_source}/"
     log "Synced chezmoi source to ${chezmoi_source}"
 
