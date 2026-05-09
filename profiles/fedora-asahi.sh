@@ -35,7 +35,7 @@ profile_install_optional_item() {
     case "$1" in
         ops-pack) install_packages dnf k9s lazydocker bottom mosh ;;
         media-pack) install_packages dnf mpv cmus chafa ;;
-        chat-pack) install_cargo_packages tgt ;;
+        chat-pack) install_packages dnf libcxx libcxxabi llvm-libunwind; install_cargo_packages tgt ;;
         music-pack) install_cargo_packages spotify_player ;;
         mail-pack) install_packages dnf aerc notmuch ;;
         news-pack) install_packages dnf newsboat ;;
