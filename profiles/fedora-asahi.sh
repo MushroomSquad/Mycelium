@@ -20,6 +20,8 @@ profile_optional_catalog() {
     cat <<'EOF'
 ops-pack|Ops pack - k9s, lazydocker, bottom, mosh|off|
 media-pack|Media pack - mpv, cmus, chafa|off|
+chat-pack|Chat pack - tgt|off|
+music-pack|Music pack - spotify_player|off|
 mail-pack|Mail pack - aerc, notmuch|off|
 news-pack|News pack - newsboat|off|
 web-pack|Web pack - w3m, lynx, yt-dlp|off|
@@ -33,6 +35,8 @@ profile_install_optional_item() {
     case "$1" in
         ops-pack) install_packages dnf k9s lazydocker bottom mosh ;;
         media-pack) install_packages dnf mpv cmus chafa ;;
+        chat-pack) install_cargo_packages tgt ;;
+        music-pack) install_cargo_packages spotify_player ;;
         mail-pack) install_packages dnf aerc notmuch ;;
         news-pack) install_packages dnf newsboat ;;
         web-pack) install_packages dnf w3m lynx yt-dlp ;;

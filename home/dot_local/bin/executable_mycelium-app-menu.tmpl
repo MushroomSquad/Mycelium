@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ -z "${ZELLIJ:-}" ]]; then
+    printf 'mycelium-app-menu: not running inside zellij\n' >&2
+    exit 1
+fi
+
+launcher="${HOME}/.local/bin/mycelium-open-tab"
+
+options=(
+    "edit:Neovim editor"
+    "git:Lazygit"
+    "monitor:btop monitor"
+    "logs:System logs"
+    "telegram:tgt Telegram"
+    "spotify:spotify_player"
+    "newsboat:Newsboat RSS"
+    "aerc:Aerc mail"
+    "neomutt:NeoMutt mail"
+    "yazi:Yazi files"
+    "ranger:Ranger files"
+    "nnn:nnn files"
+    "ncdu:ncdu disk"
+    "broot:broot tree"
+    "w3m:w3m browser"
+    "lynx:Lynx browser"
+    "cmus:cmus music"
+    "shell:New shell tab"
+)
+
+pick=""
+if command -v fzf >/dev/null 2>&1; then
+    pick="$(
+        printf '%s\n' "${options[@]}" |
+            fzf --height=70% --reverse --prompt="app tab: " --with-nth=2
+    )"
+else
+    printf '\033[H\033[2J'
+    printf 'Open tab:\n\n'
+    local_index=1
+    for option in "${options[@]}"; do
+        printf ' %2d. %s\n' "$local_index" "${option#*:}"
+        local_index=$((local_index + 1))
+    done
+    printf '\nSelect number: '
+    read -r reply < /dev/tty || true
+    if [[ "$reply" =~ ^[0-9]+$ ]] && (( reply >= 1 && reply <= ${#options[@]} )); then
+        pick="${options[$((reply - 1))]}"
+    fi
+fi
+
+[[ -n "$pick" ]] || exit 0
+exec "$launcher" "${pick%%:*}"

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ -z "${ZELLIJ:-}" ]]; then
+    printf 'mycelium-open-tab: not running inside zellij\n' >&2
+    exit 1
+fi
+
+tab_kind="${1:-}"
+[[ -n "$tab_kind" ]] || {
+    printf 'usage: mycelium-open-tab <kind>\n' >&2
+    exit 1
+}
+
+layout_dir="${HOME}/.config/zellij/layouts"
+focused_cwd="$(
+    zellij action list-panes --json |
+        jq -r '.[] | select(.is_focused == true and .is_plugin == false) | .pane_cwd' |
+        head -n1
+)"
+[[ -n "${focused_cwd:-}" && "${focused_cwd}" != "null" ]] || focused_cwd="${HOME}"
+
+case "$tab_kind" in
+    edit|git|monitor|logs|telegram|spotify)
+        exec zellij action new-tab --name "$tab_kind" --cwd "$focused_cwd" --layout "${layout_dir}/${tab_kind}.kdl"
+        ;;
+    newsboat)
+        exec zellij action new-tab --name "news" --cwd "$focused_cwd" -- newsboat
+        ;;
+    aerc)
+        exec zellij action new-tab --name "mail" --cwd "$focused_cwd" -- aerc
+        ;;
+    neomutt)
+        exec zellij action new-tab --name "mail" --cwd "$focused_cwd" -- neomutt
+        ;;
+    yazi|ranger|nnn)
+        exec zellij action new-tab --name "files" --cwd "$focused_cwd" -- "$tab_kind"
+        ;;
+    ncdu|dua|dust|broot|w3m|lynx|cmus|mpv)
+        exec zellij action new-tab --name "$tab_kind" --cwd "$focused_cwd" -- "$tab_kind"
+        ;;
+    shell)
+        exec zellij action new-tab --name "shell" --cwd "$focused_cwd"
+        ;;
+    *)
+        printf 'unsupported tab kind: %s\n' "$tab_kind" >&2
+        exit 1
+        ;;
+esac

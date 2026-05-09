@@ -36,28 +36,44 @@ keybinds {
             }
         }
         bind "Alt o" { SwitchToMode "session"; }
+        bind "Alt a" {
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-app-menu" {
+                floating true
+                close_on_exit true
+                x "15%"
+                y "10%"
+                width "70%"
+                height "75%"
+            }
+        }
         bind "Alt e" {
-            NewTab {
-                name "edit"
-                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/edit.kdl"
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "edit" {
+                close_on_exit true
             }
         }
         bind "Alt g" {
-            NewTab {
-                name "git"
-                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/git.kdl"
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "git" {
+                close_on_exit true
             }
         }
         bind "Alt m" {
-            NewTab {
-                name "monitor"
-                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/monitor.kdl"
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "monitor" {
+                close_on_exit true
             }
         }
         bind "Alt s" {
-            NewTab {
-                name "logs"
-                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/logs.kdl"
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "logs" {
+                close_on_exit true
+            }
+        }
+        bind "Alt t" {
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "telegram" {
+                close_on_exit true
+            }
+        }
+        bind "Alt p" {
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-open-tab" "spotify" {
+                close_on_exit true
             }
         }
         bind "Alt q" { CloseTab; }

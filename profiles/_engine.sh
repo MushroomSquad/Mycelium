@@ -51,9 +51,18 @@ _engine_generate_functions() {
         local id="$1"
         local pkgs_var="PROFILE_OPT_${id}_pkgs"
         local pkgs="${!pkgs_var:-}"
-        [[ -z "$pkgs" ]] && return 1
-        # shellcheck disable=SC2086
-        install_packages "$PROFILE_PKG_MANAGER" $pkgs
+        local cargo_var="PROFILE_OPT_${id}_cargo"
+        local cargo_pkgs="${!cargo_var:-}"
+
+        if [[ -n "$pkgs" ]]; then
+            # shellcheck disable=SC2086
+            install_packages "$PROFILE_PKG_MANAGER" $pkgs
+        fi
+        if [[ -n "$cargo_pkgs" ]]; then
+            # shellcheck disable=SC2086
+            install_cargo_packages $cargo_pkgs
+        fi
+        [[ -n "$pkgs" || -n "$cargo_pkgs" ]] || return 1
     }
 
     profile_install_shell() {

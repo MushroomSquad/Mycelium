@@ -174,6 +174,8 @@ Optional role-pack layer:
 
 - `ops-pack`: `k9s`, `lazydocker`, `bottom`, `mosh`
 - `media-pack`: `mpv`, `cmus`, `chafa`
+- `chat-pack`: `tgt` via Cargo
+- `music-pack`: `spotify_player` via Cargo
 - `news-pack`: `newsboat`
 - `web-pack`: `w3m`, `lynx`, `yt-dlp`
 - `disk-pack`: `ncdu`, `dua-cli`, `du-dust`

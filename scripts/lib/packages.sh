@@ -29,6 +29,41 @@ install_packages() {
     esac
 }
 
+ensure_cargo_toolchain() {
+    if have cargo; then
+        refresh_path
+        return 0
+    fi
+
+    if have rustup; then
+        rustup default stable
+        refresh_path
+    else
+        log "Installing Rust via rustup for cargo-managed packages"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+        refresh_path
+    fi
+
+    have cargo || fail "cargo is required to install optional cargo packages."
+}
+
+install_cargo_packages() {
+    local packages=("$@")
+    [[ ${#packages[@]} -eq 0 ]] && return 0
+
+    ensure_cargo_toolchain
+
+    local pkg
+    for pkg in "${packages[@]}"; do
+        if have "$pkg" || [[ -x "$HOME/.cargo/bin/$pkg" ]]; then
+            continue
+        fi
+        log "Installing $pkg via cargo"
+        cargo install --locked "$pkg" 2>/dev/null || cargo install "$pkg" || log "cargo install $pkg failed"
+        refresh_path
+    done
+}
+
 install_zellij_with_cargo() {
     if have zellij || [[ -x "$HOME/.cargo/bin/zellij" ]]; then
         refresh_path
