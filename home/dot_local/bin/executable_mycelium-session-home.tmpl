@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ -z "${ZELLIJ:-}" ]]; then
+    printf 'mycelium-session-home: not running inside zellij\n' >&2
+    exit 1
+fi
+
+layout="${HOME}/.config/zellij/layouts/{{ .autostart_layout }}.kdl"
+session_name="home"
+
+exec zellij action switch-session "${session_name}" --layout "${layout}" --cwd "${HOME}"

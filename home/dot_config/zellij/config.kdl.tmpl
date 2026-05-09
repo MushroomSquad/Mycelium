@@ -1,0 +1,76 @@
+theme "catppuccin-mocha"
+
+keybinds {
+    normal {
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt ," { GoToPreviousTab; }
+        bind "Alt ." { GoToNextTab; }
+
+        bind "Alt Enter" { ToggleFocusFullscreen; }
+
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+        bind "Alt l" { MoveFocus "Right"; }
+
+        bind "Alt n" { NewPane; }
+        bind "Alt w" {
+            LaunchOrFocusPlugin "session-manager" {
+                floating true
+            }
+        }
+        bind "Alt Shift w" {
+            Run "{{ .chezmoi.homeDir }}/.local/bin/mycelium-session-home" {
+                close_on_exit true
+            }
+        }
+        bind "Alt o" { SwitchToMode "session"; }
+        bind "Alt e" {
+            NewTab {
+                name "edit"
+                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/edit.kdl"
+            }
+        }
+        bind "Alt g" {
+            NewTab {
+                name "git"
+                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/git.kdl"
+            }
+        }
+        bind "Alt m" {
+            NewTab {
+                name "monitor"
+                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/monitor.kdl"
+            }
+        }
+        bind "Alt s" {
+            NewTab {
+                name "logs"
+                layout "{{ .chezmoi.homeDir }}/.config/zellij/layouts/logs.kdl"
+            }
+        }
+        bind "Alt x" { CloseFocus; }
+        bind "Alt r" { SwitchToMode "RenameTab"; }
+    }
+}
+
+themes {
+    catppuccin-mocha {
+        bg "#1e1e2e"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
+    }
+}

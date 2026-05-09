@@ -1,4 +1,6 @@
 layout {
+    // All workspace tabs inherit cwd from where zellij was launched.
+
     default_tab_template {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
@@ -12,55 +14,12 @@ layout {
     }
 
     tab name="main" focus=true {
-        pane split_direction="vertical" {
-            pane size="30%" {
+        pane split_direction="horizontal" {
+            pane size="35%" {
                 command "nnn"
-                args "-d" "-e"
             }
 
             pane focus=true
-        }
-    }
-
-    tab name="edit" {
-        pane {
-            command "nvim"
-        }
-    }
-
-    tab name="git" {
-        pane
-    }
-
-    tab name="monitor" {
-        pane {
-            command "btop"
-        }
-    }
-
-{{ if eq .chezmoi.os "linux" }}
-    tab name="logs" {
-        pane {
-            command "journalctl"
-            args "-f" "--no-hostname" "-p" "4" "-o" "short-monotonic"
-        }
-    }
-{{ else if eq .chezmoi.os "darwin" }}
-    tab name="logs" {
-        pane {
-            command "log"
-            args "stream" "--style" "compact" "--level" "error"
-        }
-    }
-{{ else }}
-    tab name="logs" {
-        pane
-    }
-{{ end }}
-
-    tab name="dash" {
-        pane {
-            command "fastfetch"
         }
     }
 }

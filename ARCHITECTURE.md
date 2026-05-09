@@ -33,21 +33,33 @@ kernel
 
 ## Workspaces
 
-- `1:main`: `nnn` + shell
-- `2:edit`: `nvim`
-- `3:git`: `lazygit`
-- `4:monitor`: `btop`
-- `5:logs`: `journalctl -f` on Linux, equivalent platform log stream elsewhere
-- `6:dash`: `fastfetch` + system dashboard loop
+- `1:main`: shell + `nnn`
+- auxiliary tabs are opened on demand from the active pane's current directory
+- `edit`: `nvim .`
+- `git`: `lazygit`
+- `monitor`: `btop`
+- `logs`: `journalctl -f` on Linux, equivalent platform log stream elsewhere
 
 ## Input Model
 
-- `Alt+1..6`: workspace switching
+- `Alt+1..6`: tab switching
+- `Alt+,` / `Alt+.`: previous / next tab
+- `Alt+w`: session manager overlay
+- `Alt+Shift+w`: create or switch the `home` session
+- `Alt+o`: built-in session mode
 - `Alt+Enter`: fullscreen focused pane
 - `Alt+h/j/k/l`: directional focus
 - `Alt+n`: new pane
+- `Alt+e/g/m/s`: open `edit` / `git` / `monitor` / `logs` tabs
 - `Alt+x`: close focused pane
 - `Alt+r`: rename tab mode
+
+## Session Model
+
+- one `zellij` session is the top-level project workspace
+- active pane cwd is the source for new tabs in that session
+- `Alt+Shift+w` creates or switches a session rooted at the user's home directory
+- built-in session controls are used for session list and manual switching
 
 ## System Architecture
 

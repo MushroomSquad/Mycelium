@@ -1,0 +1,15 @@
+layout {
+{{ if eq .chezmoi.os "linux" }}
+    pane {
+        command "journalctl"
+        args "-f" "--no-hostname" "-p" "4" "-o" "short-monotonic"
+    }
+{{ else if eq .chezmoi.os "darwin" }}
+    pane {
+        command "log"
+        args "stream" "--style" "compact" "--level" "error"
+    }
+{{ else }}
+    pane
+{{ end }}
+}

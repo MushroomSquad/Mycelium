@@ -21,23 +21,39 @@ Primary reference machine:
 - panes are windows
 - shell and TUI tools are the app layer
 
-Default workspaces:
+Default workspace:
 
-- `1:main`: `nnn` + shell
-- `2:edit`: `nvim`
-- `3:git`: `lazygit`
-- `4:monitor`: `btop`
-- `5:logs`: `journalctl -f` on Linux
-- `6:dash`: `fastfetch` + system dashboard loop
+- `1:main`: shell + `nnn`
+
+Tool tabs open on demand from the active pane's current directory:
+
+- `Alt+w`: session manager overlay for session list / switch / create
+- `Alt+Shift+w`: create or switch a `home` session from the user's home directory
+- `Alt+o`: built-in session mode
+- `Alt+e`: `edit` -> `nvim .`
+- `Alt+g`: `git` -> `lazygit`
+- `Alt+m`: `monitor` -> `btop`
+- `Alt+s`: `logs` -> platform log stream
 
 Key bindings:
 
-- `Alt+1..6`: switch workspaces
+- `Alt+1..6`: switch tabs by index
+- `Alt+,` / `Alt+.`: previous / next tab
+- `Alt+w`: show session manager
+- `Alt+Shift+w`: create or switch the `home` session
+- `Alt+o`: switch to session mode
 - `Alt+Enter`: fullscreen focused pane
 - `Alt+h/j/k/l`: move focus
 - `Alt+n`: new pane
 - `Alt+x`: close focused pane
 - `Alt+r`: rename tab
+
+Session and tab model:
+
+- active pane is the source of `cwd`
+- new tool tabs inherit the active pane directory
+- `Alt+Shift+w` creates or switches a session rooted at the user's home directory
+- built-in `zellij` session controls remain available for list and manual switching
 
 ## Install
 
@@ -285,7 +301,7 @@ On `fedora-asahi`, extra checks include:
 - repo: `~/.local/share/mycelium/repo`
 - state: `~/.local/share/mycelium`
 - command: `~/.local/bin/mycelium`
-- layout: `~/.config/zellij/layouts/cockpit.kdl`
+- layouts: `~/.config/zellij/layouts/*.kdl`
 - keymap: `~/.config/zellij/config.kdl`
 - verification report: `~/.local/share/mycelium/verify.tsv`
 - install metadata: `~/.local/share/mycelium/install.env`
