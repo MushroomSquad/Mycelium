@@ -12,7 +12,7 @@ if status is-interactive
     and test "$MYCELIUM_AUTOSTART" != "0"
     and not set -q SSH_CONNECTION
     if test -f ~/.config/zellij/layouts/{{ .autostart_layout }}.kdl
-        zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }}; or true
+        zellij -l {{ .autostart_layout }}; or true
     else
         zellij; or true
     end

@@ -1,7 +1,7 @@
 # Mycelium managed — do not edit manually
 if command -v zellij >/dev/null 2>&1 && [[ -z "${ZELLIJ:-}" ]] && [[ "${MYCELIUM_AUTOSTART:-1}" = "1" ]] && [[ -o interactive ]] && [[ -z "${SSH_CONNECTION:-}" ]]; then
     if [[ -f "$HOME/.config/zellij/layouts/{{ .autostart_layout }}.kdl" ]]; then
-        zellij --layout {{ .autostart_layout }} --session {{ .autostart_session }} || true
+        zellij -l {{ .autostart_layout }} || true
     else
         zellij || true
     fi

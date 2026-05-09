@@ -52,7 +52,7 @@ case "$ACTION" in
         "${SCRIPTS_DIR}/provision.sh" update "$SOURCE_ROOT"
         ;;
     start)
-        exec zellij --layout "$AUTOSTART_LAYOUT" --session "$AUTOSTART_SESSION"
+        exec zellij -l "$AUTOSTART_LAYOUT"
         ;;
     verify)
         "${SCRIPTS_DIR}/provision.sh" verify "$SOURCE_ROOT"
@@ -72,11 +72,13 @@ case "$ACTION" in
     restart)
         if have zellij; then
             local current_session
-            current_session="${ZELLIJ_SESSION_NAME:-$AUTOSTART_SESSION}"
-            log "Restarting zellij session: $current_session"
-            zellij kill-session "$current_session" 2>/dev/null || true
-            sleep 0.3
-            exec zellij --layout "$AUTOSTART_LAYOUT" --session "$current_session"
+            current_session="${ZELLIJ_SESSION_NAME:-}"
+            if [[ -n "$current_session" ]]; then
+                log "Restarting zellij session: $current_session"
+                zellij kill-session "$current_session" 2>/dev/null || true
+                sleep 0.3
+            fi
+            exec zellij -l "$AUTOSTART_LAYOUT"
         else
             fail "zellij is not installed"
         fi
@@ -86,7 +88,7 @@ case "$ACTION" in
             log "Killing all zellij sessions"
             zellij kill-all-sessions 2>/dev/null || true
             sleep 0.3
-            exec zellij --layout "$AUTOSTART_LAYOUT" --session "$AUTOSTART_SESSION"
+            exec zellij -l "$AUTOSTART_LAYOUT"
         else
             fail "zellij is not installed"
         fi
