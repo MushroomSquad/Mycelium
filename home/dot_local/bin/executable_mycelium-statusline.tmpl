@@ -2,11 +2,16 @@
 
 set -euo pipefail
 
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 battery_status() {
-    local bat
-    for bat in /sys/class/power_supply/BAT*; do
+    local bat bat_type capacity status icon
+    for bat in /sys/class/power_supply/*; do
         [[ -d "$bat" ]] || continue
-        local capacity status icon
+        bat_type="$(<"$bat/type" 2>/dev/null || echo "")"
+        [[ "$bat_type" == "Battery" ]] || continue
         capacity="$(<"$bat/capacity" 2>/dev/null || echo "?")"
         status="$(<"$bat/status" 2>/dev/null || echo "?")"
         case "$status" in
@@ -23,13 +28,28 @@ battery_status() {
 
 network_status() {
     local iface ip ssid
-    iface="$(ip route get 1.1.1.1 2>/dev/null | awk '/dev/ {for (i = 1; i <= NF; i++) if ($i == "dev") {print $(i+1); exit}}')"
-    ip="$(ip route get 1.1.1.1 2>/dev/null | awk '/src/ {for (i = 1; i <= NF; i++) if ($i == "src") {print $(i+1); exit}}')"
+    if have ip; then
+        iface="$(ip route get 1.1.1.1 2>/dev/null | awk '/dev/ {for (i = 1; i <= NF; i++) if ($i == "dev") {print $(i+1); exit}}')"
+        ip="$(ip route get 1.1.1.1 2>/dev/null | awk '/src/ {for (i = 1; i <= NF; i++) if ($i == "src") {print $(i+1); exit}}')"
+    else
+        iface=""
+        ip=""
+    fi
+    if [[ -z "${iface:-}" ]]; then
+        for iface in /sys/class/net/*; do
+            iface="${iface##*/}"
+            [[ "$iface" == "lo" ]] && continue
+            [[ -e "/sys/class/net/$iface/operstate" ]] || continue
+            [[ "$(<"/sys/class/net/$iface/operstate" 2>/dev/null || echo down)" == "up" ]] || continue
+            break
+        done
+        [[ -n "${iface:-}" && "$iface" != "/sys/class/net/*" ]] || iface=""
+    fi
     if [[ -z "${iface:-}" ]]; then
         printf 'net offline'
         return 0
     fi
-    if command -v iw >/dev/null 2>&1; then
+    if have iw; then
         ssid="$(iw dev "$iface" link 2>/dev/null | sed -n 's/^\tSSID: //p' | head -n1)"
     else
         ssid=""
@@ -45,7 +65,7 @@ network_status() {
 
 render() {
     printf '\033[H\033[2J'
-    printf '%s | %s | sess Alt+w list Alt+W home\n' "$(battery_status)" "$(network_status)"
+    printf '%s | %s | Alt+w sess | Alt+W home\n' "$(battery_status)" "$(network_status)"
     printf 'tabs Alt+1..6 Alt+, Alt+. Alt+q close | panes Alt+h/j/k/l Alt+n Alt+x | tools Alt+e/g/m/s\n'
 }
 
