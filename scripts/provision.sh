@@ -170,6 +170,15 @@ apply_chezmoi() {
         chezmoi init --apply
 }
 
+import_garuda_starship() {
+    local repo_root="${TARGET_REPO_DIR}"
+    [[ -d "${repo_root}/scripts" ]] || repo_root="${SOURCE_ROOT}"
+
+    if ! "${repo_root}/scripts/garuda-upstream.sh" starship-import "$repo_root"; then
+        log "Garuda starship import unavailable, keeping managed fallback"
+    fi
+}
+
 kill_existing_sessions() {
     if have zellij; then
         zellij kill-all-sessions >/dev/null 2>&1 || true
@@ -261,6 +270,7 @@ do_install() {
     write_metadata
     migrate_from_v1
     apply_chezmoi
+    import_garuda_starship
     kill_existing_sessions
     print_next_steps
 }

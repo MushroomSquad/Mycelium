@@ -115,6 +115,7 @@ After install, `~/.local/bin/mycelium` points at the orchestrator.
 - `mycelium theme-diff`
 - `mycelium theme-import`
 - `mycelium garuda-shell-import`
+- `mycelium garuda-starship-import`
 
 Typical usage:
 

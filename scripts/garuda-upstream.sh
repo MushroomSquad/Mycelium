@@ -194,6 +194,33 @@ do_shell_import() {
     fi
 }
 
+do_starship_import() {
+    do_sync
+
+    local chezmoi_home="${SOURCE_ROOT}/home"
+    local starship_candidates=("${UPSTREAM_DIR}/garuda-pkgbuilds/garuda-starship-prompt/starship.toml")
+    local starship_candidate
+
+    if starship_candidate="$(first_existing_candidate "${starship_candidates[@]}")"; then
+        local target="${chezmoi_home}/dot_config/starship.toml"
+        ensure_dir "$(dirname "$target")"
+        backup_file "$target" || true
+        cp "$starship_candidate" "$target" 2>/dev/null || {
+            printf '[starship-import] unable to write %s\n' "$target"
+            return 1
+        }
+        printf '[starship-import] imported from upstream\n'
+    else
+        printf '[starship-import] no upstream candidate found\n'
+        return 1
+    fi
+
+    if have chezmoi; then
+        log "Applying chezmoi after starship-import"
+        chezmoi apply || log "chezmoi apply encountered issues"
+    fi
+}
+
 case "$ACTION" in
     sync)
         do_sync
@@ -206,6 +233,9 @@ case "$ACTION" in
         ;;
     shell-import)
         do_shell_import
+        ;;
+    starship-import)
+        do_starship_import
         ;;
     *)
         fail "garuda-upstream.sh: unsupported action: $ACTION"

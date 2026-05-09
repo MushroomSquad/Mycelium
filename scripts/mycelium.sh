@@ -69,6 +69,9 @@ case "$ACTION" in
     garuda-shell-import)
         "${SCRIPTS_DIR}/garuda-upstream.sh" shell-import "$SOURCE_ROOT"
         ;;
+    garuda-starship-import)
+        "${SCRIPTS_DIR}/garuda-upstream.sh" starship-import "$SOURCE_ROOT"
+        ;;
     restart)
         if have zellij; then
             local current_session
@@ -97,6 +100,6 @@ case "$ACTION" in
         show_profile
         ;;
     *)
-        fail "Unsupported action: $ACTION. Available: install update start restart restart-all verify profile theme-sync theme-diff theme-import garuda-shell-import"
+        fail "Unsupported action: $ACTION. Available: install update start restart restart-all verify profile theme-sync theme-diff theme-import garuda-shell-import garuda-starship-import"
         ;;
 esac
