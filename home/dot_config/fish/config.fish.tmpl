@@ -1,6 +1,9 @@
 # Mycelium managed — do not edit manually
 # Profile: {{ .profile }}
 
+# --- PATH ---
+fish_add_path -gP ~/.cargo/bin ~/.local/bin
+
 # --- Autostart ---
 {{ if ne .primary_shell "bash" -}}
 if status is-interactive
